@@ -1,0 +1,69 @@
+{
+    "name": "lalalili/commerce-kit",
+    "description": "Integration glue for lalalili commerce packages: wires cart, discount, commerce-core and commerce-payment into a runnable checkout/discount/reconciliation flow for Laravel commerce applications.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.3",
+        "illuminate/contracts": "^12.0|^13.0",
+        "illuminate/support": "^12.0|^13.0",
+        "lalalili/commerce-core": "^1.0",
+        "lalalili/discount": "^3.0",
+        "lalalili/laravelshoppingcart": "^14.0",
+        "spatie/laravel-package-tools": "^1.16"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "pestphp/pest": "^3.0|^4.0",
+        "pestphp/pest-plugin-laravel": "^3.0|^4.0",
+        "laravel/pint": "^1.0",
+        "larastan/larastan": "^3.0"
+    },
+    "suggest": {
+        "lalalili/commerce-payment": "^1.0 provides ECPay/E.SUN gateways and the PaymentReconciler seam consumed by the checkout reconciliation flow."
+    },
+    "autoload": {
+        "psr-4": {
+            "Lalalili\\CommerceKit\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lalalili\\CommerceKit\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lalalili\\CommerceKit\\CommerceKitServiceProvider"
+            ]
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/lalalili/commerce-core.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/lalalili/discount.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/lalalili/laravelshoppingcart.git"
+        }
+    ],
+    "scripts": {
+        "test": "pest",
+        "analyse": "phpstan analyse --configuration=phpstan.neon.dist --no-progress",
+        "format": "pint"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
