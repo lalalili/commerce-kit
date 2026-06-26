@@ -46,16 +46,22 @@ here in `commerce-kit`, not in `commerce-core`.
   `CartDiscountRefresher`; points the kit pipeline at a host callable such as
   `[CartService::class, 'refreshDiscountConditions']`, removing the need for a
   one-off adapter class in each host. (`0.3.4`)
+- `Support\ConfiguredCheckoutOrderBuilder` — config-driven implementation of
+  commerce-core's `CheckoutOrderBuilder`; hosts describe where checkout cart
+  lines live (`getContent()->all()` vs `cartContent->all()`) and whether item
+  attributes should be normalized, removing one-off checkout order builder
+  classes while keeping cart completion in the host. (`0.3.5`)
 - `config/commerce-kit.php` — config-driven integration knobs (cart class,
-  discount-refresh instance names/callable, coupon condition class/names) so host
-  schema and naming differences (e.g. cptw `shopping_cart`/`checkout` vs aitehub
-  `cart`/`checkout`) are absorbed without forking the glue.
+  discount-refresh instance names/callable, checkout order line source, coupon
+  condition class/names) so host schema and naming differences (e.g. cptw
+  `shopping_cart`/`checkout` vs aitehub `cart`/`checkout`) are absorbed without
+  forking the glue.
 
-**Deliberately left in the host:** the checkout adapters
-(`CheckoutOrderBuilder` / `CouponCheckoutAdapter` / `CheckoutCartAccessor`) and
-the order coupon lifecycle have diverged between hosts (cart architecture, schema,
-trace strategy) and are **not** consolidation targets — convergence should be
-driven by a real new project, not forced.
+**Deliberately left in the host:** `CouponCheckoutAdapter`,
+`CheckoutCartAccessor`, and the order coupon lifecycle still diverge between
+hosts (cart completion, trace strategy, coupon clearing behavior) and are **not**
+current consolidation targets — convergence should be driven by a real new
+project, not forced.
 
 ## Configuration
 
@@ -71,6 +77,11 @@ php artisan vendor:publish --tag=commerce-kit-config
 | `discount_refresh.instances` | Cart instance names the refresh pipeline applies to. |
 | `discount_refresh.checkout_instance` | Instance name treated as checkout (forces a refresh). |
 | `discount_refresh.refresher` | Callable invoked by `ConfiguredCartDiscountRefresher`, e.g. `[CartService::class, 'refreshDiscountConditions']`. |
+| `checkout_order.expected_cart_class` | Optional checkout cart class override; defaults to `cart_class`. |
+| `checkout_order.items.method` | Method used to read checkout cart content, e.g. `getContent`. |
+| `checkout_order.items.property` | Property path used when items live on a cart service, e.g. `cartContent`. |
+| `checkout_order.items.collection_method` | Optional method called on the resolved item collection, e.g. `all`. |
+| `checkout_order.normalize_item_attributes` | Whether to normalize item attributes through commerce-core before building order data. |
 | `coupon_condition.class` | `CartCondition` class produced by the coupon condition factory. |
 | `coupon_condition.names` | Display names per coupon kind (`member` / `promotion`). |
 

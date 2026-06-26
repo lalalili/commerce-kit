@@ -35,6 +35,27 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Checkout order builder
+    |--------------------------------------------------------------------------
+    |
+    | Config-driven adapter for commerce-core's CheckoutOrderBuilder contract.
+    | Hosts only describe where cart line items live; commerce-core still owns
+    | transforming those lines into CheckoutOrderData.
+    |
+    */
+    'checkout_order' => [
+        'expected_cart_class'  => null,
+        'invalid_cart_message' => null,
+        'items'                => [
+            'method'            => 'getContent',
+            'property'          => null,
+            'collection_method' => 'all',
+        ],
+        'normalize_item_attributes' => false,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Coupon cart condition
     |--------------------------------------------------------------------------
     |
