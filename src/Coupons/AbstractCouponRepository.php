@@ -23,6 +23,8 @@ use Lalalili\Discount\Enums\CouponKind;
  * - {@see baseQuery()} — the model query already scoped to valid coupons.
  * - {@see hasUserUsed()} — order lookup differs (coupon code vs foreign key).
  * - optionally {@see isAvailable()}, {@see attributesFor()}, {@see couponTypeFor()}.
+ *
+ * @template TModel of Model
  */
 abstract class AbstractCouponRepository implements CouponRepositoryInterface
 {
@@ -36,7 +38,7 @@ abstract class AbstractCouponRepository implements CouponRepositoryInterface
      * Host model query already scoped to currently valid coupons
      * (e.g. Coupon::query()->valid()).
      *
-     * @return Builder<Model>
+     * @return Builder<TModel>
      */
     abstract protected function baseQuery(): Builder;
 
@@ -49,7 +51,7 @@ abstract class AbstractCouponRepository implements CouponRepositoryInterface
             ->where($this->typeColumn(), $this->couponTypeFor($kind))
             ->first();
 
-        if (! $coupon instanceof Model || ! $this->isAvailable($coupon, $kind)) {
+        if ($coupon === null || ! $this->isAvailable($coupon, $kind)) {
             return null;
         }
 
@@ -72,7 +74,7 @@ abstract class AbstractCouponRepository implements CouponRepositoryInterface
             ->where($this->typeColumn(), $this->couponTypeFor(CouponKind::Promotion))
             ->first();
 
-        if (! $coupon instanceof Model) {
+        if ($coupon === null) {
             return false;
         }
 
@@ -97,6 +99,7 @@ abstract class AbstractCouponRepository implements CouponRepositoryInterface
     /**
      * Attributes carried on the CouponData (must include the coupon id for tracing).
      *
+     * @param  TModel  $coupon
      * @return array<string, mixed>
      */
     protected function attributesFor(Model $coupon): array
@@ -107,6 +110,9 @@ abstract class AbstractCouponRepository implements CouponRepositoryInterface
         ];
     }
 
+    /**
+     * @param  TModel  $coupon
+     */
     protected function isAvailable(Model $coupon, CouponKind $kind): bool
     {
         return true;
