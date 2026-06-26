@@ -63,6 +63,28 @@ hosts (cart completion, trace strategy, coupon clearing behavior) and are **not*
 current consolidation targets — convergence should be driven by a real new
 project, not forced.
 
+## Extraction boundary
+
+`commerce-kit` should absorb glue only when the host variation is data/config,
+not business behavior. The current rule of thumb:
+
+| Candidate | Current status | Reason |
+| --- | --- | --- |
+| Cart discount refresh | Extracted | Hosts differ by cart instance names and the refresh callable only. |
+| Coupon cart condition | Extracted | Hosts differ by condition class and display names only. |
+| Coupon repository plumbing | Extracted | Hosts keep query/user-usage guards while shared data/inventory mapping lives here. |
+| Promotion refresh input builder | Extracted | Hosts keep promotion lookup/mapping while shared cart-line/fingerprint logic lives here. |
+| Checkout order builder | Extracted | Hosts differ by where checkout line items live and whether item attributes need normalization. |
+| Checkout cart accessor | Host-owned | Hosts still differ in cart service construction, session/checkout cleanup order, and post-checkout refresh behavior. |
+| Coupon checkout adapter | Host-owned | Hosts still differ in coupon service signatures, order-total handling, trace clearing, and condition removal behavior. |
+| Order coupon lifecycle | Host-owned | Reservation/release timing is still tied to host order/payment policies. |
+
+Revisit the host-owned rows only after either:
+
+- a new commerce project can use the same behavior without host callables; or
+- cptw and aitehub first converge their own service contracts so the remaining
+  difference becomes configuration instead of custom lifecycle code.
+
 ## Configuration
 
 Publish and tune the config:
