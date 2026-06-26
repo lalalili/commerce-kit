@@ -20,19 +20,34 @@ host app              only host-specific concerns (points, subscriptions, ebook,
 `commerce-payment` is a `suggest` (the reconciliation seam already lives there).
 There is no circular dependency: the kit sits on top, the host depends on the kit.
 
-## Status
+**Governance:** `commerce-core` intentionally does **not** depend on `discount`
+(its coupon helpers stay decoupled via `mixed`/`class-string`). So any class that
+**implements a `discount` contract** while reusing `commerce-core` helpers belongs
+here in `commerce-kit`, not in `commerce-core`.
 
-Early skeleton (`0.x`). Currently ships:
+## What it ships (`0.x`)
 
-- `Contracts\CartDiscountRefresher` — seam between the kit's discount-refresh
-  pipeline and the host cart service.
+- `Pipelines\CartDiscountRefreshPipeline` + `Contracts\CartDiscountRefresher` —
+  config-driven cart pipeline that recomputes promotion/coupon conditions via a
+  host-bound refresher. (`0.1.0`)
+- `Coupons\CouponCartConditionFactory` — builds the applied-coupon cart condition
+  via the commerce-core payload builder, with a config-driven condition class and
+  translation-key-driven display names. (`0.2.0`)
+- `Coupons\AbstractCouponRepository` — generic (`@template TModel of Model`) base
+  implementing the `discount` `CouponRepositoryInterface`: turns a host coupon
+  model into a `CouponData` (commerce-core `CouponDataFactory`) and reserves
+  promotion inventory (`CouponInventoryService`). Hosts supply only the divergent
+  `baseQuery()` / `hasUserUsed()` plus optional guards. (`0.3.0`)
 - `config/commerce-kit.php` — config-driven integration knobs (cart class,
   discount-refresh instance names, coupon condition class/names) so host schema
   and naming differences (e.g. cptw `shopping_cart`/`checkout` vs aitehub
   `cart`/`checkout`) are absorbed without forking the glue.
 
-Concrete glue (refresh pipeline, coupon condition factory, checkout adapters)
-is being extracted from the host apps incrementally.
+**Deliberately left in the host:** the checkout adapters
+(`CheckoutOrderBuilder` / `CouponCheckoutAdapter` / `CheckoutCartAccessor`) and
+the order coupon lifecycle have diverged between hosts (cart architecture, schema,
+trace strategy) and are **not** consolidation targets — convergence should be
+driven by a real new project, not forced.
 
 ## Configuration
 
