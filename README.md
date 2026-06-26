@@ -85,6 +85,57 @@ Revisit the host-owned rows only after either:
 - cptw and aitehub first converge their own service contracts so the remaining
   difference becomes configuration instead of custom lifecycle code.
 
+## Install in a new host app
+
+Install the package from the tagged VCS repository, then publish the config:
+
+```bash
+composer require lalalili/commerce-kit:^0.3
+php artisan vendor:publish --tag=commerce-kit-config
+```
+
+Laravel auto-discovers `CommerceKitServiceProvider`, so a new host does not need
+to manually register the provider. The host must still configure the integration
+points that are genuinely application-specific:
+
+1. Set `commerce-kit.cart_class` to the host cart class.
+2. Set `commerce-kit.discount_refresh.instances` and
+   `commerce-kit.discount_refresh.checkout_instance` to the cart instance names
+   used by the host.
+3. Set `commerce-kit.discount_refresh.refresher` to a config-cache-safe callable,
+   such as `[App\Services\CartService::class, 'refreshDiscountConditions']`.
+4. Set `commerce-kit.checkout_order.items` to the checkout line source:
+   `method=getContent` / `collection_method=all` for cart objects, or
+   `property=cartContent` / `collection_method=all` for cart service wrappers.
+5. Set `commerce-kit.checkout_order.normalize_item_attributes=true` when cart
+   lines expose attributes in host-specific wrappers instead of the normalized
+   commerce-core shape.
+6. Set `commerce-kit.coupon_condition.class` when the host needs a custom
+   `CartCondition` implementation, such as a Livewire `Wireable` condition.
+
+Do not put closures in `config/commerce-kit.php`; Laravel cannot serialize them
+when the host runs `config:cache`.
+
+The host still owns these `commerce-core` bindings:
+
+```php
+use App\Services\Commerce\HostCheckoutCartAccessor;
+use App\Services\Commerce\HostCouponCheckoutAdapter;
+use Lalalili\CommerceCore\Contracts\CheckoutCartAccessor;
+use Lalalili\CommerceCore\Contracts\CouponCheckoutAdapter;
+
+$this->app->singleton(CheckoutCartAccessor::class, HostCheckoutCartAccessor::class);
+$this->app->singleton(CouponCheckoutAdapter::class, HostCouponCheckoutAdapter::class);
+```
+
+Those two classes are intentionally host-owned until cart completion and coupon
+clearing semantics converge across real projects. `CheckoutOrderBuilder` is
+provided by `commerce-kit` unless the host has a more specific implementation and
+binds it before the kit's `singletonIf` runs.
+
+Install `lalalili/commerce-payment` separately when the host needs gateway,
+invoice, refund, or payment reconciliation features.
+
 ## Configuration
 
 Publish and tune the config:
