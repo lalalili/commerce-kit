@@ -30,6 +30,7 @@ return [
     'discount_refresh' => [
         'instances'         => ['shopping_cart', 'checkout'],
         'checkout_instance' => 'checkout',
+        'refresher'         => null,
     ],
 
     /*

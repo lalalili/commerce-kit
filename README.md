@@ -38,9 +38,17 @@ here in `commerce-kit`, not in `commerce-core`.
   model into a `CouponData` (commerce-core `CouponDataFactory`) and reserves
   promotion inventory (`CouponInventoryService`). Hosts supply only the divergent
   `baseQuery()` / `hasUserUsed()` plus optional guards. (`0.3.0`)
+- `Promotion\AbstractCartPromotionRefreshInputBuilder` — base implementation for
+  `discount` cart-promotion refresh inputs: builds cart lines via commerce-core,
+  caches promotion sets, and computes promotion refresh fingerprints. Hosts only
+  supply the event / promotion lookup and mapping. (`0.3.3`)
+- `Support\ConfiguredCartDiscountRefresher` — config-driven implementation of
+  `CartDiscountRefresher`; points the kit pipeline at a host callable such as
+  `[CartService::class, 'refreshDiscountConditions']`, removing the need for a
+  one-off adapter class in each host. (`0.3.4`)
 - `config/commerce-kit.php` — config-driven integration knobs (cart class,
-  discount-refresh instance names, coupon condition class/names) so host schema
-  and naming differences (e.g. cptw `shopping_cart`/`checkout` vs aitehub
+  discount-refresh instance names/callable, coupon condition class/names) so host
+  schema and naming differences (e.g. cptw `shopping_cart`/`checkout` vs aitehub
   `cart`/`checkout`) are absorbed without forking the glue.
 
 **Deliberately left in the host:** the checkout adapters
@@ -62,6 +70,7 @@ php artisan vendor:publish --tag=commerce-kit-config
 | `cart_class` | Host cart class the glue acts on (e.g. `CptwCart`). |
 | `discount_refresh.instances` | Cart instance names the refresh pipeline applies to. |
 | `discount_refresh.checkout_instance` | Instance name treated as checkout (forces a refresh). |
+| `discount_refresh.refresher` | Callable invoked by `ConfiguredCartDiscountRefresher`, e.g. `[CartService::class, 'refreshDiscountConditions']`. |
 | `coupon_condition.class` | `CartCondition` class produced by the coupon condition factory. |
 | `coupon_condition.names` | Display names per coupon kind (`member` / `promotion`). |
 
