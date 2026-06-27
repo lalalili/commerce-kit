@@ -5,6 +5,15 @@ All notable changes to `lalalili/commerce-kit` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.8] - 2026-06-27
+
+### Added
+
+- `Recurring\RecurringCheckoutContextBuilder` — config-driven glue mapping a billing cycle to the
+  ECPay recurring (Credit Period) parameters consumed by commerce-payment's
+  `RecurringPaymentGateway::startRecurring()`. Adds `recurring.cycles` config
+  (monthly → M/1/999, yearly → Y/1/99) and registers the builder as a singleton.
+
 ## [0.3.7] - 2026-06-26
 
 ### Changed

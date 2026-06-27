@@ -71,4 +71,22 @@ return [
             'promotion' => null,
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Recurring checkout (ECPay Credit Period)
+    |--------------------------------------------------------------------------
+    |
+    | Maps a billing cycle string to the ECPay recurring parameters consumed by
+    | RecurringCheckoutContextBuilder. exec_times uses near-maximum values so a
+    | subscription effectively runs until cancelled (ECPay caps: monthly 999,
+    | yearly 99; minimum 2). Hosts may override per their plans.
+    |
+    */
+    'recurring' => [
+        'cycles' => [
+            'monthly' => ['period_type' => 'M', 'frequency' => 1, 'exec_times' => 999],
+            'yearly'  => ['period_type' => 'Y', 'frequency' => 1, 'exec_times' => 99],
+        ],
+    ],
 ];
