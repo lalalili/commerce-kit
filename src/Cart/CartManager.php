@@ -23,6 +23,7 @@ class CartManager
     public function __construct(
         private readonly Container $container,
         private readonly CartDiscountRefresher $refresher,
+        private readonly CartTotalsSnapshotFactory $totalsSnapshotFactory,
     ) {
     }
 
@@ -60,5 +61,13 @@ class CartManager
     public function refreshDiscounts(Cart $cart, bool $force = false): ?CartPromotionRefreshResult
     {
         return $this->refresher->refreshDiscountConditions($cart, $force);
+    }
+
+    /**
+     * @param (callable(mixed): array<string, mixed>)|null $normalizeAttributes
+     */
+    public function totalsSnapshot(Cart $cart, ?callable $normalizeAttributes = null): Data\CartTotalsSnapshot
+    {
+        return $this->totalsSnapshotFactory->fromCart($cart, $normalizeAttributes);
     }
 }

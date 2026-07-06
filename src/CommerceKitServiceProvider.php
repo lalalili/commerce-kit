@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lalalili\CommerceKit;
 
 use Lalalili\CommerceKit\Cart\CartManager;
+use Lalalili\CommerceKit\Cart\CartTotalsSnapshotFactory;
 use Lalalili\CommerceKit\Contracts\CartDiscountRefresher;
 use Lalalili\CommerceKit\Coupons\CouponCartConditionFactory;
 use Lalalili\CommerceKit\Pipelines\CartDiscountRefreshPipeline;
@@ -31,6 +32,7 @@ class CommerceKitServiceProvider extends PackageServiceProvider
         $this->app->singleton(CouponCartConditionFactory::class);
         $this->app->singleton(CartDiscountRefreshPipeline::class);
         $this->app->singleton(RecurringCheckoutContextBuilder::class);
+        $this->app->singleton(CartTotalsSnapshotFactory::class);
         $this->app->scoped(CartManager::class);
     }
 }
