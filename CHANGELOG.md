@@ -5,6 +5,24 @@ All notable changes to `lalalili/commerce-kit` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-07-06
+
+### Added
+
+- `Cart\CartManager`(scoped):統一的 host 端購物車入口。以
+  `commerce-kit.cart_manager.bindings` 宣告邏輯名稱 → container binding 對映
+  (cptw `shopping_cart`、aitehub `cart`),提供 `cart()` / `checkout()` /
+  `instance()` / `refreshDiscounts()`,消除 host 專屬 binding 字串散落。
+- `Cart\Concerns\WireableCondition` trait:CartCondition 子類的 Livewire 序列化
+  實作(host 自行 implements `Livewire\Wireable` 並掛 trait);kit 不依賴 livewire,
+  Inertia host 直接用 base CartCondition。
+
+### Notes
+
+- 搭配 laravelshoppingcart v14.3.0 的 `rounding.per_condition_step`,host 的
+  `CptwCart::getSubTotal()/getTotal()` 覆寫可整段移除,取回 base Cart 的
+  totalsCache 與 pipeline 去重。
+
 ## [0.3.8] - 2026-06-27
 
 ### Added

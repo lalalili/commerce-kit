@@ -19,6 +19,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Cart manager
+    |--------------------------------------------------------------------------
+    |
+    | Logical name → container binding for the unified CartManager entry point.
+    | cptw: ['cart' => 'shopping_cart', 'checkout' => 'checkout'];
+    | aitehub: ['cart' => 'cart', 'checkout' => 'checkout'].
+    |
+    */
+    'cart_manager' => [
+        'bindings' => [
+            'cart'     => 'cart',
+            'checkout' => 'checkout',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Discount refresh
     |--------------------------------------------------------------------------
     |

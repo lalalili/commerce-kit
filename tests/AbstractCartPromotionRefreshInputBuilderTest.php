@@ -53,18 +53,18 @@ it('builds discount refresh input from cart content and host promotion sets', fu
     $builder = new TestCartPromotionRefreshInputBuilder(
         content: testBuilderCollection([
             (object) [
-                'id' => 10,
-                'quantity' => 2,
-                'price' => 150.0,
+                'id'              => 10,
+                'quantity'        => 2,
+                'price'           => 150.0,
                 'associatedModel' => 'Product',
-                'attributes' => ['bundle' => true],
+                'attributes'      => ['bundle' => true],
             ],
             (object) [
-                'id' => 11,
-                'quantity' => 1,
-                'price' => 80.0,
+                'id'              => 11,
+                'quantity'        => 1,
+                'price'           => 80.0,
                 'associatedModel' => 'Product',
-                'attributes' => [],
+                'attributes'      => [],
             ],
         ]),
         products: testBuilderCollection([

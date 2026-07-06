@@ -15,3 +15,6 @@ parameters:
     ignoreErrors:
         - identifier: larastan.noEnvCallsOutsideOfConfig
           path: config/*
+        # host 端使用的 opt-in trait,套件內無使用點(tests 有覆蓋)
+        - identifier: trait.unused
+          path: src/Cart/Concerns/WireableCondition.php
