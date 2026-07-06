@@ -69,9 +69,14 @@ abstract class AbstractCouponRepository implements CouponRepositoryInterface
 
     public function decrementInventory(string $code): bool
     {
+        // 具發行量庫存的 kind:promotion 與 free_shipping(member 券無庫存概念);
+        // 以 code + type 集合尋找,券碼前綴不同 kind 不致相撞
         $coupon = $this->baseQuery()
             ->where($this->codeColumn(), $code)
-            ->where($this->typeColumn(), $this->couponTypeFor(CouponKind::Promotion))
+            ->whereIn($this->typeColumn(), [
+                $this->couponTypeFor(CouponKind::Promotion),
+                $this->couponTypeFor(CouponKind::FreeShipping),
+            ])
             ->first();
 
         if ($coupon === null) {
@@ -120,7 +125,11 @@ abstract class AbstractCouponRepository implements CouponRepositoryInterface
 
     protected function couponTypeFor(CouponKind $kind): int|string
     {
-        return $kind === CouponKind::Member ? 1 : 2;
+        return match ($kind) {
+            CouponKind::Member       => 1,
+            CouponKind::Promotion    => 2,
+            CouponKind::FreeShipping => 3,
+        };
     }
 
     protected function codeColumn(): string
