@@ -48,7 +48,7 @@ class CouponCartConditionFactory
 
     private function nameFor(CouponKind $kind): string
     {
-        $key = $kind === CouponKind::Member ? 'member' : 'promotion';
+        $key = $kind->value;
         $configured = config('commerce-kit.coupon_condition.names.'.$key);
         $translationKey = is_string($configured) && $configured !== '' ? $configured : 'cruds.coupon.'.$key;
 

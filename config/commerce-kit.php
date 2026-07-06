@@ -84,8 +84,9 @@ return [
     'coupon_condition' => [
         'class' => CartCondition::class,
         'names' => [
-            'member'    => null,
-            'promotion' => null,
+            'member'        => null,
+            'promotion'     => null,
+            'free_shipping' => null,
         ],
     ],
 

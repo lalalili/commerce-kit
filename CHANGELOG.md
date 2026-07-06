@@ -5,6 +5,15 @@ All notable changes to `lalalili/commerce-kit` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-07-07
+
+### Added
+
+- `CouponCartConditionFactory` 支援免運券 `CouponKind::FreeShipping`
+  (顯示名 translation key `cruds.coupon.free_shipping`,可由
+  `commerce-kit.coupon_condition.names.free_shipping` 覆寫);搭配
+  discount v3.4.0 + commerce-core v1.71.0。
+
 ## [0.6.0] - 2026-07-07
 
 ### Changed(效能,行為不變)
