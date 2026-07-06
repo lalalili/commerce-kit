@@ -5,6 +5,17 @@ All notable changes to `lalalili/commerce-kit` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-07-07
+
+### Changed(效能,行為不變)
+
+- `AbstractCartPromotionRefreshInputBuilder::lines()` 加入 memo:
+  `promotionRefreshSignature()` / `promotionVersion()` / `build()` 共用同一份
+  lines 解析結果,line resolver 與 attribute normalizer 由每次 refresh ≥3 次
+  降為 1 次(`InputBuilderLinesMemoTest` 以 spy resolver 斷言)。
+- 新增 `PromotionRefreshBenchmarkTest`(`@group benchmark`):100 lines × 6
+  promotions 的 signature/refresh 效能邊界煙霧測試,防 O(L²×E) 級回歸。
+
 ## [0.5.0] - 2026-07-06
 
 ### Added

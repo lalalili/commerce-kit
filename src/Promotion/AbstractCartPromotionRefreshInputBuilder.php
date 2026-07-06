@@ -24,6 +24,11 @@ abstract class AbstractCartPromotionRefreshInputBuilder implements CartPromotion
     private ?array $promotionSetsByProductId = null;
 
     /**
+     * @var list<CartLineContext>|null
+     */
+    private ?array $lines = null;
+
+    /**
      * @param  Collection<int|string, mixed>  $content
      * @param  Collection<int|string, mixed>  $products
      */
@@ -39,11 +44,15 @@ abstract class AbstractCartPromotionRefreshInputBuilder implements CartPromotion
     }
 
     /**
+     * builder 為 per-refresh 短生命週期物件($content readonly),lines 解析結果
+     * memo 供 build()/promotionRefreshSignature()/promotionVersion() 共用,
+     * 避免重複執行 line resolver 與 attribute normalizer。
+     *
      * @return list<CartLineContext>
      */
     public function lines(): array
     {
-        return array_map(
+        return $this->lines ??= array_map(
             fn (object $line): CartLineContext => $this->ensureCartLineContext($line),
             $this->inputFactory()->linesFromPayloads($this->lineResolver()->payloads(
                 content: $this->content,
