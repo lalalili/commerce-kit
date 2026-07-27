@@ -1,0 +1,61 @@
+name: Integration
+
+# commerce-kit 是 cart + discount + commerce-core 的膠水層,但一般 CI 只在
+# 「有人推 commerce-kit」時才跑。相依套件自己發新版時,沒有任何機制會發現
+# 組合壞掉。這個排程每天用相依的最新版重跑一次。
+#
+# 同時跑 --prefer-lowest,驗證 composer.json 宣告的版本下限是真的能動 ——
+# 先前宣告 ^1.0 / ^3.0 / ^14.0,實際上 commerce-core 要 1.49+ 才有
+# CartPromotionLineResolver,下限完全是假的。
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'composer.json'
+      - '.github/workflows/integration.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  matrix:
+    name: ${{ matrix.deps }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        deps: [highest, lowest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, mbstring, pdo_sqlite, zip
+          coverage: none
+
+      - name: Install dependencies (${{ matrix.deps }})
+        env:
+          COMPOSER_PROCESS_TIMEOUT: '0'
+          COMPOSER_NO_AUDIT: '1'
+        run: |
+          if [ "${{ matrix.deps }}" = "lowest" ]; then
+            composer update --prefer-lowest --prefer-stable \
+              --prefer-dist --no-interaction --no-progress
+          else
+            composer update --prefer-dist --no-interaction --no-progress
+          fi
+
+      - name: Show resolved lalalili versions
+        run: composer show 'lalalili/*'
+
+      - name: Tests
+        run: composer test
+
+      - name: Static analysis
+        run: composer analyse

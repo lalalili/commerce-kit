@@ -5,6 +5,21 @@ All notable changes to `lalalili/commerce-kit` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-07-27
+
+### Fixed
+
+- 相依版本下限改為實際可運作的版本:`commerce-core ^1.71`、
+  `discount ^3.4`、`laravelshoppingcart ^14.4`。原本宣告 `^1.0` / `^3.0` /
+  `^14.0`,但 `--prefer-lowest` 會直接失敗 —— commerce-core 要到 v1.49.0
+  才有 `CartPromotionLineResolver`,宣告的下限是假的。
+
+### Added
+
+- `integration.yml`:每天用相依套件的最新版重跑一次測試。一般 CI 只在有人
+  推 commerce-kit 時觸發,相依套件自己發新版時不會有任何檢查。
+- 同一個 workflow 併跑 `--prefer-lowest`,確保宣告的版本下限持續為真。
+
 ## [1.0.0] - 2026-07-27
 
 ### Changed
