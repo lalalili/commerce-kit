@@ -37,6 +37,9 @@
             "providers": [
                 "Lalalili\\CommerceKit\\CommerceKitServiceProvider"
             ]
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
         }
     },
     "repositories": [
