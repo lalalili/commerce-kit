@@ -59,3 +59,16 @@ jobs:
 
       - name: Static analysis
         run: composer analyse
+
+  # public repo 60 天無活動會被 GitHub 停用整個 workflow（2026-10-03 已發生一次）。
+  # 排程執行時對自己重新 enable，可重置計時；與測試分開，測試失敗也照做。
+  keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Reset inactivity timer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow enable integration.yml --repo "$GITHUB_REPOSITORY"
